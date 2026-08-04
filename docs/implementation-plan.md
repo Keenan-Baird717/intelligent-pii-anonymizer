@@ -263,15 +263,18 @@ the file lifecycle, and conduct a dependency audit. Complete `security.md` and
 
 ## Phase 9 — Deployment and portfolio polish
 
-**Objectives:** create production configuration, deploy where practical, add an
-architecture diagram and screenshots, add fictional demo files, complete the README, and
-write portfolio/resume descriptions.
+**Status:** complete (see [progress.md](progress.md) for gate results).
+
+**Objectives:** final UI polish, accessibility/responsive review, architecture diagrams,
+fictional demo files and screenshots, README and portfolio assets, deployment-readiness
+docs, GitHub preparation, and final regression gates. No enterprise SaaS features.
 
 **Acceptance criteria:**
 - A reviewer can run the project from the README (with Windows/PowerShell notes).
 - The demo workflow is clear with fictional samples.
 - All quality checks pass.
 - Known limitations are documented.
+- No remote push or cloud deploy is performed by the phase itself.
 
 ---
 

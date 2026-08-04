@@ -243,9 +243,10 @@ Does not return original text, detected values, or pseudonym mappings.
 
 ### `POST /api/v1/documents`
 
-Secure multipart upload for temporary document storage (Phase 4). Validates extension,
-declared MIME type, file signature, and document structure. Does **not** extract text,
-run OCR, detect PII, or anonymize documents.
+Secure multipart upload for temporary document storage. Validates extension,
+declared MIME type, file signature, and document structure. Returns safe job
+metadata only. Text extraction, OCR, detection, and redaction happen on subsequent
+job endpoints after upload.
 
 #### Request
 
@@ -506,11 +507,13 @@ bounded by `OCR_MAX_PAGES`.
 
 ---
 
-## Planned
+## Planned / out of scope
 
-| Method | Path | Phase |
-|--------|------|-------|
-| Auth / history / RBAC | — | 8+ (out of scope for Phase 7) |
+| Item | Status |
+|------|--------|
+| Authentication / RBAC / history | Out of scope for this MVP |
+| Dedicated custom-recognizer CRUD API | Not implemented — optional `custom_recognizers` on `POST /analyze/text` only |
+| CSV entity export | Deferred |
+| Cloud object storage / Redis / Celery / K8s | Out of scope |
 
-Phase 7 results and audit reports are implemented. Phase 8 security hardening and
-portfolio polish are not started.
+Phases 0–9 of the local portfolio MVP are complete. See [progress.md](progress.md).

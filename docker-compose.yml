@@ -79,10 +79,12 @@ services:
       - ALL
     cap_add:
       # Required only for entrypoint volume chown + gosu drop to uid 10001.
+      # DAC_OVERRIDE is needed after cap_drop:ALL so root can repair 0700 volume perms.
       - CHOWN
       - SETUID
       - SETGID
       - FOWNER
+      - DAC_OVERRIDE
     read_only: true
     tmpfs:
       - /tmp

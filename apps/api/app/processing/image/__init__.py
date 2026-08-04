@@ -109,9 +109,9 @@ def redact_image(
     from PIL import Image, ImageDraw, ImageOps
 
     try:
-        with Image.open(source) as img:
-            img = ImageOps.exif_transpose(img) or img
-            working = img.convert("RGB")
+        with Image.open(source) as opened:
+            oriented = ImageOps.exif_transpose(opened) or opened
+            working = oriented.convert("RGB")
             draw = ImageDraw.Draw(working)
             width, height = working.size
             for box in rectangles:

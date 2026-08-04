@@ -86,8 +86,8 @@ def _write_processed_variant(
     import numpy as np
     from PIL import Image
 
-    with Image.open(source) as img:
-        img = img.convert("RGB")
+    with Image.open(source) as opened:
+        img = opened.convert("RGB")
         original_width, original_height = img.size
         rgb = np.array(img)
 

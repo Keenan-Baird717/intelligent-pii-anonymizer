@@ -3,4 +3,7 @@ node_modules
 out
 dist
 test-results
+test-results-screenshots
 playwright-report
+
+test-results-screenshots/

@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
+  testIgnore: [/screenshots\.manual\.ts/],
   fullyParallel: false,
   retries: 0,
   // Keep reports/traces off so document content is not retained locally or in CI.

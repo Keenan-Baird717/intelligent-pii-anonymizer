@@ -13,21 +13,21 @@ export function HomeWorkspace() {
   return (
     <section className="space-y-4" aria-labelledby="workspace-mode-heading">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h2 id="workspace-mode-heading" className="text-xl font-semibold">
+        <div className="min-w-0 max-w-2xl">
+          <h2 id="workspace-mode-heading" className="text-xl font-semibold text-slate-900">
             Workspace
           </h2>
-          <p className="text-sm text-slate-600">
-            Paste text for review and anonymization, or upload a PDF for text-based analysis and
-            true redaction.
+          <p className="mt-1 text-sm text-slate-600">
+            Paste text for explainable detection and anonymization, or upload a PDF, PNG, JPG, or
+            JPEG for coordinate-aware review and irreversible redaction.
           </p>
         </div>
         <div role="group" aria-label="Workspace mode" className="flex gap-2">
           <button
             type="button"
             aria-pressed={mode === "text"}
-            className={`rounded-md px-3 py-2 text-sm ${
-              mode === "text" ? "bg-slate-900 text-white" : "border"
+            className={`btn focus-ring ${
+              mode === "text" ? "bg-slate-900 text-white" : "border border-slate-300 bg-white"
             }`}
             onClick={() => setMode("text")}
           >
@@ -36,8 +36,8 @@ export function HomeWorkspace() {
           <button
             type="button"
             aria-pressed={mode === "upload"}
-            className={`rounded-md px-3 py-2 text-sm ${
-              mode === "upload" ? "bg-slate-900 text-white" : "border"
+            className={`btn focus-ring ${
+              mode === "upload" ? "bg-slate-900 text-white" : "border border-slate-300 bg-white"
             }`}
             onClick={() => setMode("upload")}
           >

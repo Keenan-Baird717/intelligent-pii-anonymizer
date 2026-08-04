@@ -2,6 +2,99 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --surface: #f4f6f8;
+  --surface-raised: #ffffff;
+  --ink: #0f172a;
+  --ink-muted: #475569;
+  --accent: #0f766e;
+  --accent-soft: #ccfbf1;
+  --warning: #92400e;
+  --warning-soft: #fffbeb;
+  --danger: #991b1b;
+  --danger-soft: #fef2f2;
+  --success: #065f46;
+  --success-soft: #ecfdf5;
+  --border: #cbd5e1;
+  --focus-ring: #0f766e;
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply antialiased;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(15, 118, 110, 0.08), transparent),
+    var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans), "IBM Plex Sans", ui-sans-serif, sans-serif;
+}
+
+code,
+.font-mono,
+pre {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-slate-900 text-white hover:bg-slate-800 focus-visible:outline-teal-700;
+  }
+
+  .btn-secondary {
+    @apply btn border border-slate-300 bg-white text-slate-900 hover:bg-slate-50 focus-visible:outline-teal-700;
+  }
+
+  .btn-danger {
+    @apply btn border border-red-300 bg-white text-red-900 hover:bg-red-50 focus-visible:outline-red-700;
+  }
+
+  .panel {
+    @apply rounded-lg border border-slate-200 bg-white shadow-sm;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-medium;
+  }
+
+  .focus-ring {
+    @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visible keyboard focus for interactive controls lacking component-level rings */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }

@@ -21,7 +21,7 @@ Legend: not started, in progress, complete, blocked.
 | 6 | OCR and image processing | complete | Permanence: rasterize-rebuild |
 | 7 | Results and exports | complete | No AuditEvent table |
 | 8 | Security hardening and testing | complete | Threat model + hardening; no migration 005 |
-| 9 | Deployment and portfolio polish | not started | |
+| 9 | Deployment and portfolio polish | complete | Final MVP gate |
 
 ---
 
@@ -30,9 +30,11 @@ Legend: not started, in progress, complete, blocked.
 | Check | Result |
 |-------|--------|
 | Git root | `C:/Projects/intelligent-pii-anonymizer` |
+| Branch | `master` |
 | Remotes | None |
 | Secrets / `.env` tracked | No |
 | Playwright reports tracked | Ignored via `.gitignore` |
+| Final commit created in Phase 9 | No (not requested) |
 
 ---
 
@@ -459,11 +461,86 @@ isolation. See
 
 ### Phase 9 confirmation
 
-**Phase 9 (deployment and portfolio polish) has not been started.**
+**Phase 9 (deployment and portfolio polish) is complete.** See Phase 9 section below.
+
+---
+
+## Phase 9 — Deployment and portfolio polish
+
+**Status:** complete (2026-08-04).
+
+### Work completed
+
+- Final UI polish: IBM Plex typography, teal accent identity, shared button/panel classes,
+  updated copy for Phases 5–8 capabilities, aligned PDF/image entity types with backend
+- Accessibility: focus rings, reduced-motion, axe smoke tests (`jest-axe`), docs notes
+- Fictional samples + `scripts/generate_fictional_samples.py` (path-contained)
+- Portfolio screenshots in `docs/images/` via explicit `npm run screenshots`
+- Architecture Mermaid diagrams updated to match implementation (no AuditEvent/settings myths)
+- README rewrite; `docs/portfolio.md`, `docs/demo-guide.md`, `docs/deployment.md`,
+  `docs/testing.md`, `docs/accessibility.md`
+- GitHub prep: `SECURITY.md`, `CONTRIBUTING.md`; license decision documented as pending
+- Compose fix: `DAC_OVERRIDE` for upload-volume ownership repair under `cap_drop: ALL`
+- Fixed truncated `.env.example` (`CUSTOM_REGEX_TIMEOUT_SECONDS`)
+- Removed accidental tracked `apps/api/_t.pdf`
+
+### Final quality gates (executed)
+
+| Command | Result |
+|---------|--------|
+| Backend `ruff format --check` / `ruff check` / `mypy app` | Pass |
+| Host `pytest tests/ -q -rs` | **188 passed, 3 skipped** |
+| Docker `pytest tests/ -q -rs` | **191 passed, 0 skipped** |
+| Frontend format/lint/typecheck | Pass |
+| Vitest | **36 passed** (includes 2 axe smoke tests) |
+| `npm run build` | Pass |
+| `npm audit --audit-level=critical` | Pass (high Next findings accepted; see dependency-audit) |
+| `bandit -r app -ll` | Pass (no medium/high) |
+| Host `pip-audit` | Noisy (92 findings across global/conda env) — treat CI/clean env as source of truth |
+| Docker `pip-audit` | Failed: read-only FS cannot create `/root/.cache` |
+| Playwright `npm run test:e2e` | **10 passed** |
+| Screenshots `npm run screenshots` | **10 passed** → `docs/images/*.png` |
+| `docker compose config` / `up --build -d` / `ps` | Pass — postgres/api healthy; web up |
+| Live health / frontend | `ok` + `connected`; HTTP 200 |
+| Live text analyze/anonymize | Pass (fictional Casey Okafor) |
+| Live PDF + PNG analyze + delete | Pass via curl |
+| Live `scripts/live_phase8_check.py` | Pass |
+| Security headers | `nosniff`, `DENY`, `no-referrer` present |
+| Tesseract in API image | `eng` (+ `osd`) listed |
+| API process user | **uid 10001** (uvicorn) |
+| Image sizes | API **2.14 GB**; web **343 MB** |
+| Git remotes | **None** |
+| Final commit | **Not created** (awaiting explicit instruction) |
+
+### Fictional samples
+
+`fictional-text-example.txt`, `fictional-text-document.pdf`,
+`fictional-scanned-document.pdf`, `fictional-mixed-document.pdf`,
+`fictional-id-card.png`, `fictional-contact-sheet.jpg`, plus `samples/fictional/README.md`.
+
+### Screenshots
+
+`docs/images/01-home-input.png` … `10-delete-now-confirmation.png` (fictional data only).
+
+### Unresolved limitations (unchanged production gaps)
+
+No auth/TLS/distributed cleanup/malware scanning; UUID ≠ access control; API image ~2.1 GB;
+axe smoke ≠ WCAG certification; host pip-audit polluted by global packages; license not yet
+chosen.
+
+### MVP completion
+
+**Phases 0–9 are complete** for the local portfolio MVP. Do not start additional phases
+unless explicitly instructed. Do not push or create a GitHub remote unless instructed.
 
 ---
 
 ## Next step
 
-Phase 9 (deployment and portfolio polish) begins only on explicit instruction. Do
-not start Phase 9 yet.
+Create a dedicated GitHub repository and push when authorized. Recommended commit message:
+
+```text
+docs: complete Phase 9 portfolio polish and final MVP gates
+```
+
+Manual GitHub steps are listed in the Phase 9 completion report / README clone placeholder.

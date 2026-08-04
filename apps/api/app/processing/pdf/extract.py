@@ -110,7 +110,7 @@ def extract_document(path: Path, *, raise_on_scanned: bool = True) -> ExtractedD
                 code="OCR_REQUIRED",
                 message=(
                     "This PDF appears to be image-based and requires OCR, "
-                    "which is not available yet."
+                    "which is unavailable for this request."
                 ),
                 status_code=422,
             )

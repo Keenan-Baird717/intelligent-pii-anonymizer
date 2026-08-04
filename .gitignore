@@ -49,6 +49,7 @@ playwright-downloads/
 # Transient browser downloads from local Playwright runs
 apps/web/test-results/
 apps/web/playwright-report/
+apps/web/test-results-screenshots/
 
 
 # Docker

@@ -166,7 +166,7 @@ describe("TextReviewWorkspace", () => {
     await user.click(screen.getByRole("button", { name: /Load fictional example/i }));
     await waitFor(() => {
       const value = (screen.getByLabelText(/Text to analyze/i) as HTMLTextAreaElement).value;
-      expect(value).toContain("fictional.user@example.com");
+      expect(value).toContain("casey.okafor@example.com");
     });
   });
 

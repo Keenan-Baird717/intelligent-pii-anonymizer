@@ -17,20 +17,8 @@ import {
   type PdfRect,
 } from "@/lib/api";
 import { DocumentResultPanel } from "@/features/results/DocumentResultPanel";
+import { ENTITY_TYPES } from "@/features/review/types";
 import { PdfPreview } from "./PdfPreview";
-
-const ENTITY_TYPES = [
-  "PERSON",
-  "EMAIL_ADDRESS",
-  "PHONE_NUMBER",
-  "LOCATION",
-  "CA_POSTAL_CODE",
-  "CA_SIN",
-  "CREDIT_CARD",
-  "DATE_TIME",
-  "ORGANIZATION",
-  "OTHER",
-];
 
 type PdfReviewWorkspaceProps = {
   job: JobMetadata;

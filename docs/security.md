@@ -1,10 +1,10 @@
 # Security — Intelligent PII Anonymization Platform
 
-> Status: completed for Phase 8 (security hardening and testing). This document
-> reflects the controls implemented through Phase 8 for a **local, single-instance,
-> unauthenticated MVP**. It is not a claim of production readiness. See
-> [§14 Production requirements](#14-production-requirements-not-implemented-in-phase-8)
-> for controls that a real deployment must add.
+> Status: completed through Phase 9 (portfolio polish). Security controls described
+> here were implemented in Phase 8 for a **local, single-instance, unauthenticated
+> MVP** and were not weakened in Phase 9. This is not a claim of production
+> readiness. See [§14 Production requirements](#14-production-requirements-not-implemented-in-phase-8)
+> and [deployment.md](deployment.md).
 
 This document describes the platform's threat model, trust boundaries, and the
 controls that protect uploaded documents and detected PII. It complements
@@ -532,10 +532,14 @@ rectangle, recognizer, pattern-length, and audit-warning caps bound work per job
 
 ### 7.14 Container security
 
-Non-root uid 10001, `no-new-privileges`, `cap_drop: ALL`, read-only root FS with
+Non-root uid 10001 (uvicorn), `no-new-privileges`, `cap_drop: ALL`, read-only root FS with
 `tmpfs /tmp`, read-only code mounts, Postgres unpublished, host ports bound to
-`127.0.0.1`. The API image is large (**~2.1 GB**) because it bundles spaCy,
-Tesseract, and OpenCV — a known size/footprint trade-off, not lightweight.
+`127.0.0.1`. The API entrypoint starts as root only long enough to repair upload-volume
+ownership, then drops via `gosu` to uid 10001. With `cap_drop: ALL`, Compose also grants
+`CHOWN`, `SETUID`, `SETGID`, `FOWNER`, and `DAC_OVERRIDE` so that root can manage
+mode-0700 named volumes before dropping privileges. The API image is large (**~2.1 GB**)
+because it bundles spaCy, Tesseract, and OpenCV — a known size/footprint trade-off, not
+lightweight.
 
 ### 7.15 Dependency auditing
 

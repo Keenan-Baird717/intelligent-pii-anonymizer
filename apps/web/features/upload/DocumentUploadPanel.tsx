@@ -159,18 +159,16 @@ export function DocumentUploadPanel({
     <section className="space-y-6" aria-labelledby="upload-heading">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 id="upload-heading" className="text-xl font-semibold">
+          <h2 id="upload-heading" className="text-xl font-semibold text-slate-900">
             Document upload
           </h2>
           <p className="text-sm text-slate-600">
-            Secure temporary storage only. Document analysis will be added in the next phase.
+            Secure temporary upload for PDF, PNG, JPG, and JPEG. After validation you can open
+            review for detection, OCR (when needed), and irreversible redaction. Files expire after
+            60 minutes and can be deleted immediately.
           </p>
         </div>
-        <button
-          type="button"
-          className="rounded-md border px-3 py-2 text-sm"
-          onClick={onSwitchToText}
-        >
+        <button type="button" className="btn-secondary" onClick={onSwitchToText}>
           Switch to pasted text
         </button>
       </div>
@@ -180,8 +178,8 @@ export function DocumentUploadPanel({
           role="button"
           tabIndex={0}
           aria-label="Drop a PDF, PNG, JPG, or JPEG file here, or press Enter to browse"
-          className={`rounded-lg border-2 border-dashed p-8 text-center transition ${
-            dragActive ? "border-slate-700 bg-slate-50" : "border-slate-300 bg-white"
+          className={`focus-ring rounded-lg border-2 border-dashed p-6 text-center sm:p-8 ${
+            dragActive ? "border-teal-700 bg-teal-50/40" : "border-slate-300 bg-white"
           }`}
           onDragEnter={(event) => {
             event.preventDefault();
@@ -231,11 +229,7 @@ export function DocumentUploadPanel({
           </div>
         ) : null}
 
-        <button
-          type="submit"
-          disabled={loading || !file}
-          className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading || !file} className="btn-primary">
           {loading ? "Uploading…" : "Upload document"}
         </button>
       </form>
@@ -262,7 +256,7 @@ export function DocumentUploadPanel({
           <dl className="grid gap-2 sm:grid-cols-2">
             <div>
               <dt className="text-slate-500">Job ID</dt>
-              <dd className="font-mono text-xs">{job.job_id}</dd>
+              <dd className="break-all font-mono text-xs">{job.job_id}</dd>
             </div>
             <div>
               <dt className="text-slate-500">Status</dt>
@@ -297,14 +291,14 @@ export function DocumentUploadPanel({
           </dl>
           <p className="text-slate-600">
             {job.file_type === "pdf"
-              ? "Text-based and scanned PDF analysis with true redaction are available next."
-              : "Image OCR analysis and irreversible redaction are available next."}
+              ? "Open PDF review to analyze embedded text and/or OCR scanned pages, then apply true irreversible redaction."
+              : "Open image review to run local OCR, review detections, and apply irreversible pixel redaction."}
           </p>
           <div className="flex flex-wrap gap-2">
             {job.file_type === "pdf" && onAnalyzePdf ? (
               <button
                 type="button"
-                className="rounded-md bg-slate-900 px-3 py-2 text-white"
+                className="btn-primary"
                 onClick={() => onAnalyzePdf(job)}
                 disabled={loading}
               >
@@ -314,19 +308,14 @@ export function DocumentUploadPanel({
             {(job.file_type === "png" || job.file_type === "jpeg") && onOpenImageReview ? (
               <button
                 type="button"
-                className="rounded-md bg-slate-900 px-3 py-2 text-white"
+                className="btn-primary"
                 onClick={() => onOpenImageReview(job)}
                 disabled={loading}
               >
                 Open image review
               </button>
             ) : null}
-            <button
-              type="button"
-              className="rounded-md border border-red-300 px-3 py-2 text-red-800"
-              onClick={onDelete}
-              disabled={loading}
-            >
+            <button type="button" className="btn-danger" onClick={onDelete} disabled={loading}>
               Delete now
             </button>
           </div>

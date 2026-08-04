@@ -9,8 +9,8 @@ import type { AnonymizationMethod, ReviewEntity } from "./types";
 import { ENTITY_TYPES } from "./types";
 
 const EXAMPLE =
-  "Fictional User can be reached at fictional.user@example.com or 902-555-0182. " +
-  "Mailing address uses postal code B3H 1Y2.";
+  "Casey Okafor can be reached at casey.okafor@example.com or 902-555-0182. " +
+  "Mailing address uses postal code B3H 1Y2 at Northstar Demo Clinic.";
 
 const METHODS: AnonymizationMethod[] = ["replacement", "redaction", "masking", "pseudonymize"];
 
@@ -229,22 +229,14 @@ export function TextReviewWorkspace() {
             rows={8}
             value={inputText}
             onChange={(event) => setInputText(event.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm"
+            className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm focus-ring"
             placeholder={EXAMPLE}
           />
           <div className="flex flex-wrap gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-            >
+            <button type="submit" disabled={loading} className="btn-primary" aria-busy={loading}>
               {loading ? "Analyzing…" : "Analyze text"}
             </button>
-            <button
-              type="button"
-              className="rounded-md border px-4 py-2 text-sm"
-              onClick={() => setInputText(EXAMPLE)}
-            >
+            <button type="button" className="btn-secondary" onClick={() => setInputText(EXAMPLE)}>
               Load fictional example
             </button>
           </div>
@@ -403,7 +395,7 @@ export function TextReviewWorkspace() {
               </button>
               <button
                 type="button"
-                className="rounded-md bg-slate-900 px-3 py-1 text-sm text-white disabled:opacity-50"
+                className="btn-primary"
                 disabled={loading}
                 onClick={onAnonymize}
               >
@@ -577,9 +569,9 @@ export function TextReviewWorkspace() {
       )}
 
       {step === "result" && state.anonymizedText && (
-        <div className="space-y-3">
-          <h3 className="font-medium">Anonymized preview</h3>
-          <pre className="whitespace-pre-wrap rounded-lg border bg-white p-3 text-sm">
+        <div className="panel space-y-3 p-4">
+          <h3 className="font-medium text-slate-900">Anonymized preview</h3>
+          <pre className="whitespace-pre-wrap break-words rounded-lg border bg-slate-50 p-3 text-sm">
             {state.anonymizedText}
           </pre>
           {state.transformStats && (
@@ -592,30 +584,18 @@ export function TextReviewWorkspace() {
             </p>
           )}
           <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="rounded-md border px-3 py-1 text-sm"
-              onClick={copyResult}
-            >
+            <button type="button" className="btn-secondary" onClick={copyResult}>
               Copy to clipboard
             </button>
-            <button
-              type="button"
-              className="rounded-md border px-3 py-1 text-sm"
-              onClick={downloadResult}
-            >
+            <button type="button" className="btn-secondary" onClick={downloadResult}>
               Download .txt
             </button>
-            <button
-              type="button"
-              className="rounded-md border px-3 py-1 text-sm"
-              onClick={downloadTextAudit}
-            >
+            <button type="button" className="btn-secondary" onClick={downloadTextAudit}>
               Download audit report
             </button>
             <button
               type="button"
-              className="rounded-md border px-3 py-1 text-sm"
+              className="btn-secondary"
               onClick={() => {
                 dispatch({ type: "BACK_TO_REVIEW" });
                 setStep("review");
@@ -625,7 +605,7 @@ export function TextReviewWorkspace() {
             </button>
             <button
               type="button"
-              className="rounded-md border px-3 py-1 text-sm"
+              className="btn-danger"
               onClick={() => {
                 dispatch({ type: "CLEAR_ALL" });
                 setInputText("");

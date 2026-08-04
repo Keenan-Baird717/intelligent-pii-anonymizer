@@ -7,6 +7,7 @@ from pathlib import Path
 import fitz
 import pytest
 
+from app.core.errors import AppError
 from app.processing.ocr.models import PixelBBox, RenderTransform
 from app.processing.ocr.transforms import pdf_to_pixel_bbox, pixel_to_pdf_bbox
 from app.processing.pdf.redact import (
@@ -135,7 +136,7 @@ def test_raster_redaction_failure_deletes_partial(
         raise RuntimeError("simulated failure")
 
     monkeypatch.setattr("app.processing.pdf.redact.fitz.Page.get_pixmap", boom)
-    with pytest.raises(Exception):
+    with pytest.raises(AppError) as exc_info:
         apply_redactions(
             source,
             output,
@@ -143,6 +144,7 @@ def test_raster_redaction_failure_deletes_partial(
             pixel_redact_pages={1},
             dpi=120,
         )
+    assert exc_info.value.code == "REDACTION_FAILED"
     assert not output.exists()
     assert not output.with_suffix(".writing.pdf").exists()
 

@@ -129,7 +129,7 @@ describe("PDF workflow UI", () => {
       expires_at: "2026-08-03T13:00:00Z",
     });
     const err = new Error(
-      "This PDF appears to be image-based and requires OCR, which is not available yet.",
+      "This PDF appears to be image-based and requires OCR, which is unavailable for this request.",
     ) as api.ApiError;
     err.code = "OCR_REQUIRED";
     vi.spyOn(api, "analyzeDocument").mockRejectedValue(err);

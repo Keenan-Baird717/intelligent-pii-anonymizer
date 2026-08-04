@@ -1,0 +1,16 @@
+SYNTHETIC DEMO SAMPLE — NOT REAL PERSONAL DATA
+==============================================
+
+Northstar Demo Clinic
+Patient intake (fictional)
+
+Name: Casey Okafor
+Email: casey.okafor@example.com
+Phone: 902-555-0182
+Postal code: B3H 1Y2
+Organization: Harbour Example Bank
+Contact: Jordan Example <jordan.example@example.com>
+Alternate: Avery Fiction at avery.fiction@example.org
+
+Notes: This file is generated for portfolio demonstrations only.
+Do not treat any value as a real identifier.
