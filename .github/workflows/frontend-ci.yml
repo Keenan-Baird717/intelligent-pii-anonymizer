@@ -1,0 +1,51 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/frontend-ci.yml"
+      - ".github/dependabot.yml"
+  pull_request:
+    paths:
+      - "apps/web/**"
+      - ".github/workflows/frontend-ci.yml"
+      - ".github/dependabot.yml"
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install dependencies
+        run: npm ci || npm install
+      - name: Prettier check
+        run: npm run format:check
+      - name: ESLint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Vitest
+        run: npm run test
+      - name: Production build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+      - name: npm audit (critical+)
+        # High findings in Next 15 / Vitest tooling are documented in docs/security.md
+        # as accepted temporarily (fixes require major upgrades). Critical remains a gate.
+        run: npm audit --audit-level=critical
+      - name: Confirm no Playwright artifacts retained by default
+        working-directory: .
+        run: |
+          test ! -d apps/web/test-results || (echo "test-results present" && exit 1)
+          test ! -d apps/web/playwright-report || (echo "playwright-report present" && exit 1)

@@ -1,0 +1,120 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pii}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
+      POSTGRES_DB: ${POSTGRES_DB:-pii_anonymizer}
+    # Local MVP: keep Postgres on the Compose network only (not published to the host).
+    expose:
+      - "5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pii} -d ${POSTGRES_DB:-pii_anonymizer}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-pii}:${POSTGRES_PASSWORD:-change_me_in_production}@postgres:5432/${POSTGRES_DB:-pii_anonymizer}
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,api,testserver}
+      ENABLE_HSTS: ${ENABLE_HSTS:-false}
+      DEBUG: ${DEBUG:-false}
+      MAX_TEXT_LENGTH: ${MAX_TEXT_LENGTH:-50000}
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-20971520}
+      MAX_PDF_PAGES: ${MAX_PDF_PAGES:-50}
+      MAX_IMAGE_PIXELS: ${MAX_IMAGE_PIXELS:-40000000}
+      UPLOAD_TTL_MINUTES: ${UPLOAD_TTL_MINUTES:-60}
+      UPLOAD_CLEANUP_INTERVAL_SECONDS: ${UPLOAD_CLEANUP_INTERVAL_SECONDS:-300}
+      TEMP_UPLOAD_DIR: /var/pii-uploads
+      OCR_ENABLED: ${OCR_ENABLED:-true}
+      OCR_LANGUAGE: ${OCR_LANGUAGE:-eng}
+      OCR_TIMEOUT_SECONDS: ${OCR_TIMEOUT_SECONDS:-60}
+      OCR_RENDER_DPI: ${OCR_RENDER_DPI:-200}
+      OCR_MIN_WORD_CONFIDENCE: ${OCR_MIN_WORD_CONFIDENCE:-35}
+      OCR_LOW_CONFIDENCE_THRESHOLD: ${OCR_LOW_CONFIDENCE_THRESHOLD:-60}
+      OCR_MAX_PAGES: ${OCR_MAX_PAGES:-20}
+      OCR_PREPROCESSING_ENABLED: ${OCR_PREPROCESSING_ENABLED:-true}
+      OCR_DESKEW_ENABLED: ${OCR_DESKEW_ENABLED:-true}
+      OCR_TEMP_DIR: /var/pii-uploads/ocr-work
+      OCR_EXECUTABLE: ${OCR_EXECUTABLE:-tesseract}
+      MAX_ENTITIES_PER_JOB: ${MAX_ENTITIES_PER_JOB:-500}
+      MAX_RECTANGLES_PER_ENTITY: ${MAX_RECTANGLES_PER_ENTITY:-32}
+      MAX_MANUAL_RECTANGLES: ${MAX_MANUAL_RECTANGLES:-100}
+      MAX_CUSTOM_RECOGNIZERS: ${MAX_CUSTOM_RECOGNIZERS:-10}
+      MAX_REGEX_PATTERN_LENGTH: ${MAX_REGEX_PATTERN_LENGTH:-200}
+      MAX_AUDIT_WARNINGS: ${MAX_AUDIT_WARNINGS:-50}
+      MAX_CONCURRENT_OCR_JOBS: ${MAX_CONCURRENT_OCR_JOBS:-2}
+      MAX_CONCURRENT_DOCUMENT_JOBS: ${MAX_CONCURRENT_DOCUMENT_JOBS:-4}
+      MAX_CONCURRENT_UPLOADS: ${MAX_CONCURRENT_UPLOADS:-4}
+      MAX_CONCURRENT_REDACTIONS: ${MAX_CONCURRENT_REDACTIONS:-2}
+      CUSTOM_REGEX_TIMEOUT_SECONDS: ${CUSTOM_REGEX_TIMEOUT_SECONDS:-0.25}
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      # Required only for entrypoint volume chown + gosu drop to uid 10001.
+      - CHOWN
+      - SETUID
+      - SETGID
+      - FOWNER
+    read_only: true
+    tmpfs:
+      - /tmp
+    volumes:
+      - ./apps/api/app:/app/app:ro
+      - ./apps/api/tests:/app/tests:ro
+      - ./docker-compose.yml:/app/docker-compose.yml:ro
+      - api_uploads:/var/pii-uploads
+    init: true
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp
+    init: true
+
+volumes:
+  postgres_data:
+  api_uploads:
